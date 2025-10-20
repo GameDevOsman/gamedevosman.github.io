@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OsmoDev | Game Developer Portfolio</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -111,9 +112,34 @@
     footer {
       background-color: #000;
       text-align: center;
-      padding: 30px 0;
+      padding: 40px 0 20px;
       font-size: 0.9rem;
       color: #888;
+    }
+
+    .social-icons {
+      margin-bottom: 15px;
+    }
+
+    .social-icons a {
+      color: #00bcd4;
+      font-size: 1.6rem;
+      margin: 0 12px;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      color: #fff;
+    }
+
+    footer a {
+      color: #00bcd4;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -164,8 +190,12 @@
   </section>
 
   <footer>
+    <div class="social-icons">
+      <a href="mailto:osmansaleem18@gmail.com" title="Email Me"><i class="fas fa-envelope"></i></a>
+      <a href="https://www.linkedin.com/in/usmansaleem1997/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    </div>
     <p>© 2025 OsmoDev | All Rights Reserved</p>
-    <p><a href="https://osmodev.itch.io" target="_blank" style="color:#00bcd4;text-decoration:none;">Visit my Itch.io page</a></p>
+    <p><a href="https://osmodev.itch.io" target="_blank">Visit my Itch.io page</a></p>
   </footer>
 
 </body>
