@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OsmoDev | Game Portfolio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', monospace;
+      background-color: #0a0a0f;
+      color: #f8f8f2;
+      text-align: center;
+      padding-bottom: 50px;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    header {
+      background: linear-gradient(135deg, #4a00e0, #8e2de2);
+      padding: 80px 20px;
+      color: #fff;
+      box-shadow: 0 0 25px rgba(142, 45, 226, 0.7);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      font-size: 0.75rem;
+      color: #ffd6ff;
+      margin-top: 10px;
+    }
+
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin: 60px auto;
+      max-width: 1100px;
+      padding: 0 20px;
+    }
+
+    .game {
+      background: #151520;
+      border: 2px solid #8e2de2;
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    .game:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 20px #8e2de2;
+    }
+
+    .game img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #4a00e0;
+    }
+
+    .game h3 {
+      font-size: 0.9rem;
+      color: #ff79c6;
+      margin: 0 0 10px 0;
+    }
+
+    .game a {
+      text-decoration: none;
+      color: #50fa7b;
+      font-size: 0.7rem;
+      border: 1px solid #50fa7b;
+      padding: 6px 10px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .game a:hover {
+      background: #50fa7b;
+      color: #0a0a0f;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.6rem;
+      color: #888;
+    }
+
+    footer a {
+      color: #8be9fd;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎮 OsmoDev</h1>
+    <p>Indie Game Developer | Retro Arcade Vibes</p>
+  </header>
+
+  <section class="games">
+    <div class="game">
+      <img src="img/hero-vanished.png" alt="A Hero Vanished in Shadows">
+      <h3>A Hero Vanished in Shadows</h3>
+      <a href="https://osmodev.itch.io/a-hero-vanished-in-shadows" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/2d-tower-defense.png" alt="2D Tower Defense">
+      <h3>2D Tower Defense</h3>
+      <a href="https://osmodev.itch.io/2d-tower-defense" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/supah-boi.png" alt="Supah Boi Runner">
+      <h3>Supah Boi Runner</h3>
+      <a href="https://osmodev.itch.io/supah-boi-runner" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/color-balls.png" alt="Color Balls">
+      <h3>Color Balls</h3>
+      <a href="https://osmodev.itch.io/color-balls" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/bathtime-word-bubbles.png" alt="Bathtime Word Bubbles">
+      <h3>Bathtime Word Bubbles</h3>
+      <a href="https://osmodev.itch.io/bathtime-word-bubbles" target="_blank">Play on Itch.io</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 OsmoDev | <a href="https://osmodev.itch.io/">View all games on Itch.io</a></p>
+  </footer>
+
+</body>
+</html>
