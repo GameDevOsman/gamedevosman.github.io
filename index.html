@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OsmoDev | Game Portfolio</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', monospace;
+      background-color: #0a0a0f;
+      color: #f8f8f2;
+      text-align: center;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #4a00e0, #8e2de2);
+      padding: 80px 20px;
+      color: #fff;
+      box-shadow: 0 0 25px rgba(142, 45, 226, 0.7);
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      font-size: 0.75rem;
+      color: #ffd6ff;
+      margin-top: 10px;
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+      background: linear-gradient(to bottom right, #120458, #2e0359);
+      color: #f8f8f2;
+      padding: 80px 20px;
+      border-bottom: 2px solid #8e2de2;
+      box-shadow: 0 0 20px rgba(142, 45, 226, 0.6);
+    }
+
+    .hero h2 {
+      font-size: 1.2rem;
+      color: #ff79c6;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 0.7rem;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.8;
+      color: #d6d6d6;
+    }
+
+    .about-me {
+      margin-top: 25px;
+      font-size: 0.65rem;
+      color: #ccc;
+    }
+
+    /* --- GAMES GRID --- */
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin: 60px auto;
+      max-width: 1100px;
+      padding: 0 20px;
+    }
+
+    .game {
+      background: #151520;
+      border: 2px solid #8e2de2;
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+
+    .game:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 20px #8e2de2;
+    }
+
+    .game img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #4a00e0;
+    }
+
+    .game h3 {
+      font-size: 0.9rem;
+      color: #ff79c6;
+      margin: 0 0 10px 0;
+    }
+
+    .game p {
+      font-size: 0.6rem;
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+
+    .game a {
+      text-decoration: none;
+      color: #50fa7b;
+      font-size: 0.7rem;
+      border: 1px solid #50fa7b;
+      padding: 6px 10px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .game a:hover {
+      background: #50fa7b;
+      color: #0a0a0f;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 0.6rem;
+      color: #888;
+    }
+
+    footer a {
+      color: #8be9fd;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎮 ThatGamedevOsman</h1>
+    <p>Indie Game Developer or something else???</p>
+  </header>
+
+  <section class="hero">
+    <h2>Welcome to My Game Portfolio</h2>
+    <p>Explore my collection of indie projects built in Unity — from action platformers to relaxing puzzle games.</p>
+    <div class="about-me">
+      <p>Hi, I’m <strong>Osman</strong> — an indie game developer passionate about creating worlds that feel alive.  
+      I specialize in Unity and love experimenting with unique mechanics, tight controls, and satisfying feedback loops.  
+      My goal is to make every small project a complete, polished experience — one level, one pixel, one sound at a time.</p>
+    </div>
+  </section>
+
+  <section class="games">
+    <div class="game">
+      <img src="img/hero-vanished.jpg" alt="A Hero Vanished in Shadows">
+      <h3>A Hero Vanished in Shadows</h3>
+      <p>A roguelike 2D platformer where you battle through darkness, collecting power-ups and facing hidden dangers.</p>
+      <a href="https://osmodev.itch.io/a-hero-vanished-in-shadows" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/2d-tower-defense.jpg" alt="2D Tower Defense">
+      <h3>2D Tower Defense</h3>
+      <p>Defend your base across 25 handcrafted levels with towers, heroes, and enemies that evolve over time.</p>
+      <a href="https://osmodev.itch.io/2d-tower-defense" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/supah-boi.jpg" alt="Supah Boi Runner">
+      <h3>Supah Boi Runner</h3>
+      <p>A 3D platformer where you jump, float, and dodge traps to collect coins and survive moving platforms.</p>
+      <a href="https://osmodev.itch.io/supah-boi-runner" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/color-balls.jpg" alt="Color Balls">
+      <h3>Color Balls</h3>
+      <p>Sort and align colorful balls to match the pattern — a satisfying puzzle game with relaxing vibes.</p>
+      <a href="https://osmodev.itch.io/color-balls" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/bathtime-word-bubbles.jpg" alt="Bathtime Word Bubbles">
+      <h3>Bathtime Word Bubbles</h3>
+      <p>Guess words from pictures and pop bubbles in this cute, casual puzzle game perfect for short sessions.</p>
+      <a href="https://osmodev.itch.io/bathtime-word-bubbles" target="_blank">Play on Itch.io</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 ThatGamedevOsman | <a href="https://osmodev.itch.io/" target="_blank">View all games on Itch.io</a></p>
+  </footer>
+
+</body>
+</html>
