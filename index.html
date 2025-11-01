@@ -65,12 +65,22 @@
       color: #ccc;
     }
 
+    /* --- CATEGORY TITLES --- */
+    .category-title {
+      font-size: 1rem;
+      color: #50fa7b;
+      margin-top: 60px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
     /* --- GAMES GRID --- */
     .games {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 30px;
-      margin: 60px auto;
+      margin: 20px auto 60px;
       max-width: 1100px;
       padding: 0 20px;
     }
@@ -122,6 +132,13 @@
       color: #0a0a0f;
     }
 
+    /* --- CENTER ROLLER COASTER CARD ON DESKTOP --- */
+    @media (min-width: 950px) {
+      .games .game:last-child {
+        grid-column: 2 / 3;
+      }
+    }
+
     footer {
       margin-top: 50px;
       font-size: 0.6rem;
@@ -155,27 +172,15 @@
     </div>
   </section>
 
+  <!-- COMPLETED GAMES -->
+  <h2 class="category-title">🏁 Completed Games</h2>
   <section class="games">
-
-    <div class="game">
-      <img src="img/hero-vanished.jpg" alt="A Hero Vanished in Shadows">
-      <h3>A Hero Vanished in Shadows</h3>
-      <p>A roguelike 2D platformer where you battle through darkness, collecting power-ups and facing hidden dangers.</p>
-      <a href="https://osmodev.itch.io/a-hero-vanished-in-shadows" target="_blank">Play on Itch.io</a>
-    </div>
 
     <div class="game">
       <img src="img/2d-tower-defense.jpg" alt="2D Tower Defense">
       <h3>2D Tower Defense</h3>
       <p>Defend your base across 25 handcrafted levels with towers, heroes, and enemies that evolve over time.</p>
       <a href="https://osmodev.itch.io/2d-tower-defense" target="_blank">Play on Itch.io</a>
-    </div>
-
-    <div class="game">
-      <img src="img/supah-boi.jpg" alt="Supah Boi Runner">
-      <h3>Supah Boi Runner</h3>
-      <p>A 3D platformer where you jump, float, and dodge traps to collect coins and survive moving platforms.</p>
-      <a href="https://osmodev.itch.io/supah-boi-runner" target="_blank">Play on Itch.io</a>
     </div>
 
     <div class="game">
@@ -192,12 +197,31 @@
       <a href="https://osmodev.itch.io/bathtime-word-bubbles" target="_blank">Play on Itch.io</a>
     </div>
 
-    <!-- 🎢 NEW GAME -->
     <div class="game">
       <img src="img/roller-coaster-theme-park.png" alt="Roller Coaster Theme Park">
       <h3>Roller Coaster Theme Park</h3>
       <p>Experience the thrill of building and riding roller coasters in a 3D amusement park! Unlock new rides, tracks, and coaster cars while earning rewards through AdMob-integrated gameplay.</p>
       <a href="https://osmodev.itch.io/roller-coaster-theme-park" target="_blank">Play on Itch.io</a>
+    </div>
+
+  </section>
+
+  <!-- UNDER DEVELOPMENT -->
+  <h2 class="category-title">🚧 Under Development</h2>
+  <section class="games">
+
+    <div class="game">
+      <img src="img/hero-vanished.jpg" alt="A Hero Vanished in Shadows">
+      <h3>A Hero Vanished in Shadows</h3>
+      <p>A roguelike 2D platformer where you battle through darkness, collecting power-ups and facing hidden dangers.</p>
+      <a href="https://osmodev.itch.io/a-hero-vanished-in-shadows" target="_blank">Play on Itch.io</a>
+    </div>
+
+    <div class="game">
+      <img src="img/supah-boi.jpg" alt="Supah Boi Runner">
+      <h3>Supah Boi Runner</h3>
+      <p>A 3D platformer where you jump, float, and dodge traps to collect coins and survive moving platforms.</p>
+      <a href="https://osmodev.itch.io/supah-boi-runner" target="_blank">Play on Itch.io</a>
     </div>
 
   </section>
@@ -208,3 +232,4 @@
 
 </body>
 </html>
+
