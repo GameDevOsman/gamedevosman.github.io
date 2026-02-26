@@ -6,702 +6,198 @@
   <title>ThatGamedevOsman | Indie Game Developer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
-
   <style>
     :root {
-      --purple: #8e2de2;
-      --purple-dark: #4a00e0;
-      --pink: #ff79c6;
-      --green: #50fa7b;
-      --cyan: #8be9fd;
-      --yellow: #f1fa8c;
-      --bg: #07070f;
-      --bg2: #0e0e1a;
-      --card-bg: #111120;
-      --border: #8e2de230;
+      --purple: #8e2de2; --purple-dark: #4a00e0; --pink: #ff79c6;
+      --green: #50fa7b; --cyan: #8be9fd; --yellow: #f1fa8c;
+      --bg: #07070f; --bg2: #0e0e1a; --card-bg: #111120; --border: #8e2de230;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    /* ─── CURSOR ─── */
     *, *::before, *::after { cursor: none !important; }
-    #cursor {
-      position: fixed; top: 0; left: 0; z-index: 9999;
-      pointer-events: none;
-    }
-    #cursor .dot {
-      width: 10px; height: 10px; background: var(--green);
-      border-radius: 50%; position: absolute;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 8px var(--green), 0 0 16px var(--green);
-      transition: transform 0.1s;
-    }
-    #cursor .ring {
-      width: 32px; height: 32px;
-      border: 1.5px solid var(--purple);
-      border-radius: 50%; position: absolute;
-      transform: translate(-50%, -50%);
-      transition: all 0.15s ease;
-    }
-    body.hovering #cursor .ring {
-      width: 50px; height: 50px; border-color: var(--pink);
-    }
-
-    /* ─── SCANLINES OVERLAY ─── */
-    body::after {
-      content: '';
-      position: fixed; inset: 0; z-index: 9000;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.07) 2px,
-        rgba(0,0,0,0.07) 4px
-      );
-      pointer-events: none;
-    }
-
-    /* ─── BASE ─── */
+    #cursor { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; }
+    #cursor .dot { width:10px; height:10px; background:var(--green); border-radius:50%; position:absolute; transform:translate(-50%,-50%); box-shadow:0 0 8px var(--green),0 0 16px var(--green); }
+    #cursor .ring { width:32px; height:32px; border:1.5px solid var(--purple); border-radius:50%; position:absolute; transform:translate(-50%,-50%); transition:all 0.15s ease; }
+    body.hovering #cursor .ring { width:50px; height:50px; border-color:var(--pink); }
+    body::after { content:''; position:fixed; inset:0; z-index:9000; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px); pointer-events:none; }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Rajdhani', sans-serif;
-      background: var(--bg);
-      color: #f0f0f8;
-      overflow-x: hidden;
-    }
+    body { font-family:'Rajdhani',sans-serif; background:var(--bg); color:#f0f0f8; overflow-x:hidden; }
+    .pixel-grid-bg { background-image:linear-gradient(rgba(142,45,226,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(142,45,226,0.04) 1px,transparent 1px); background-size:40px 40px; }
 
-    /* ─── PIXEL GRID BG ─── */
-    .pixel-grid-bg {
-      background-image:
-        linear-gradient(rgba(142,45,226,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(142,45,226,0.04) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
+    /* NAV */
+    nav { position:fixed; top:0; left:0; right:0; z-index:500; display:flex; align-items:center; justify-content:space-between; padding:16px 40px; background:rgba(7,7,15,0.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); transition:border-color 0.3s; }
+    nav.scrolled { border-bottom-color:#8e2de255; }
+    .nav-logo { font-family:'Press Start 2P',monospace; font-size:0.7rem; color:var(--green); text-decoration:none; text-shadow:0 0 12px var(--green); letter-spacing:1px; }
+    .nav-links { display:flex; gap:32px; list-style:none; }
+    .nav-links a { font-family:'Press Start 2P',monospace; font-size:0.5rem; color:#aaa; text-decoration:none; letter-spacing:1px; transition:color 0.2s; position:relative; }
+    .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; right:0; height:1px; background:var(--purple); transform:scaleX(0); transition:transform 0.2s; }
+    .nav-links a:hover { color:var(--pink); }
+    .nav-links a:hover::after { transform:scaleX(1); }
 
-    /* ─── NOISE TEXTURE ─── */
-    .noise::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 1;
-    }
+    /* HERO */
+    #hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:100px 20px 60px; position:relative; overflow:hidden; }
+    .hero-bg { position:absolute; inset:0; z-index:0; }
+    canvas#stars { position:absolute; inset:0; width:100%; height:100%; }
+    .hero-glow { position:absolute; width:600px; height:600px; border-radius:50%; background:radial-gradient(ellipse,rgba(142,45,226,0.18) 0%,transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); animation:pulseGlow 4s ease-in-out infinite; }
+    @keyframes pulseGlow { 0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)} }
+    .hero-content { position:relative; z-index:2; text-align:center; }
+    .hero-tag { font-family:'Press Start 2P',monospace; font-size:0.55rem; color:var(--green); letter-spacing:3px; margin-bottom:20px; opacity:0; animation:fadeUp 0.6s 0.2s forwards; }
+    .hero-tag::before { content:'> '; color:var(--purple); }
+    .hero-title { font-family:'Press Start 2P',monospace; font-size:clamp(1.2rem,4vw,2.2rem); line-height:1.5; margin-bottom:16px; opacity:0; animation:fadeUp 0.6s 0.4s forwards; }
+    .hero-title .name { color:var(--pink); display:block; }
+    .hero-title .role { color:var(--cyan); font-size:0.6em; display:block; margin-top:8px; }
+    .hero-desc { font-family:'VT323',monospace; font-size:1.4rem; color:#bbb; max-width:600px; margin:0 auto 40px; line-height:1.6; opacity:0; animation:fadeUp 0.6s 0.6s forwards; }
+    .hero-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; opacity:0; animation:fadeUp 0.6s 0.8s forwards; }
+    .btn { font-family:'Press Start 2P',monospace; font-size:0.55rem; padding:14px 24px; border-radius:4px; text-decoration:none; letter-spacing:1px; transition:all 0.2s; }
+    .btn-primary { background:linear-gradient(135deg,var(--purple-dark),var(--purple)); color:#fff; border:1px solid var(--purple); box-shadow:0 0 20px rgba(142,45,226,0.4); }
+    .btn-primary:hover { transform:translateY(-3px); box-shadow:0 0 30px rgba(142,45,226,0.7); }
+    .btn-secondary { background:transparent; color:var(--green); border:1px solid var(--green); }
+    .btn-secondary:hover { background:var(--green); color:var(--bg); transform:translateY(-3px); }
+    .scroll-hint { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); z-index:2; font-family:'Press Start 2P',monospace; font-size:0.4rem; color:#555; display:flex; flex-direction:column; align-items:center; gap:8px; animation:bounce 2s infinite; }
+    .scroll-arrow { width:14px; height:14px; border-right:2px solid #555; border-bottom:2px solid #555; transform:rotate(45deg); }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)} }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ─── NAV ─── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 40px;
-      background: rgba(7,7,15,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      transition: border-color 0.3s;
-    }
-    nav.scrolled { border-bottom-color: #8e2de255; }
-    .nav-logo {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.7rem; color: var(--green);
-      text-decoration: none;
-      text-shadow: 0 0 12px var(--green);
-      letter-spacing: 1px;
-    }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
-      color: #aaa;
-      text-decoration: none;
-      letter-spacing: 1px;
-      transition: color 0.2s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute; bottom: -4px; left: 0; right: 0; height: 1px;
-      background: var(--purple); transform: scaleX(0);
-      transition: transform 0.2s;
-    }
-    .nav-links a:hover { color: var(--pink); }
-    .nav-links a:hover::after { transform: scaleX(1); }
+    /* GLITCH */
+    .glitch { position:relative; display:inline-block; }
+    .glitch:hover::before,.glitch:hover::after { content:attr(data-text); position:absolute; top:0; left:0; width:100%; height:100%; opacity:0.8; }
+    .glitch:hover::before { color:var(--pink); clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%); animation:g1 0.3s infinite; }
+    .glitch:hover::after  { color:var(--cyan); clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%); animation:g2 0.3s infinite; }
+    @keyframes g1 { 0%,100%{transform:translateX(-2px)} 50%{transform:translateX(2px)} }
+    @keyframes g2 { 0%,100%{transform:translateX(2px)}  50%{transform:translateX(-2px)} }
 
-    /* ─── HERO ─── */
-    #hero {
-      min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 100px 20px 60px;
-      position: relative; overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0; z-index: 0;
-    }
-    canvas#stars { position: absolute; inset: 0; width: 100%; height: 100%; }
+    /* STATS */
+    #stats { padding:40px 20px; background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .stats-inner { max-width:900px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:24px; }
+    .stat-item { text-align:center; }
+    .stat-num { font-family:'Press Start 2P',monospace; font-size:1.6rem; color:var(--green); text-shadow:0 0 12px var(--green); display:block; }
+    .stat-label { font-family:'VT323',monospace; font-size:1.1rem; color:#777; letter-spacing:2px; margin-top:4px; display:block; }
 
-    .hero-glow {
-      position: absolute;
-      width: 600px; height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(142,45,226,0.18) 0%, transparent 70%);
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
-      animation: pulseGlow 4s ease-in-out infinite;
-    }
-    @keyframes pulseGlow {
-      0%,100% { opacity: 0.6; transform: translate(-50%,-50%) scale(1); }
-      50% { opacity: 1; transform: translate(-50%,-50%) scale(1.1); }
-    }
+    /* SECTION HEADERS */
+    .section-header { text-align:center; margin-bottom:48px; }
+    .section-eyebrow { font-family:'Press Start 2P',monospace; font-size:0.5rem; color:var(--purple); letter-spacing:4px; margin-bottom:12px; display:block; }
+    .section-title { font-family:'Press Start 2P',monospace; font-size:clamp(0.9rem,2.5vw,1.3rem); color:#fff; margin-bottom:16px; display:block; }
+    .section-line { width:60px; height:3px; background:linear-gradient(90deg,var(--purple),var(--pink)); margin:0 auto; }
 
-    .hero-content { position: relative; z-index: 2; text-align: center; }
+    /* ABOUT */
+    #about { padding:100px 20px; max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1.4fr; gap:60px; align-items:center; }
+    .about-avatar { width:100%; aspect-ratio:1; background:var(--card-bg); border:2px solid var(--purple); border-radius:12px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .about-avatar img { width:100%; height:100%; object-fit:cover; border-radius:10px; position:relative; z-index:2; }
+    .about-avatar::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(74,0,224,0.2),rgba(142,45,226,0.1)); }
+    .avatar-scanline { position:absolute; inset:0; z-index:3; background:repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(142,45,226,0.04) 4px,rgba(142,45,226,0.04) 8px); pointer-events:none; }
+    .avatar-corner { position:absolute; width:16px; height:16px; border-color:var(--green); border-style:solid; z-index:4; }
+    .avatar-corner.tl { top:10px; left:10px; border-width:2px 0 0 2px; }
+    .avatar-corner.tr { top:10px; right:10px; border-width:2px 2px 0 0; }
+    .avatar-corner.bl { bottom:10px; left:10px; border-width:0 0 2px 2px; }
+    .avatar-corner.br { bottom:10px; right:10px; border-width:0 2px 2px 0; }
+    .about-text .section-header { text-align:left; }
+    .about-text .section-line { margin:0; }
+    .about-text p { font-family:'Rajdhani',sans-serif; font-size:1.15rem; line-height:1.8; color:#bbb; margin-bottom:16px; }
+    .skill-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; }
+    .chip { font-family:'Press Start 2P',monospace; font-size:0.45rem; padding:7px 12px; border-radius:3px; background:rgba(142,45,226,0.1); border:1px solid rgba(142,45,226,0.4); color:var(--cyan); transition:all 0.2s; }
+    .chip:hover { background:rgba(142,45,226,0.25); border-color:var(--purple); color:#fff; }
 
-    .hero-tag {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem; color: var(--green);
-      letter-spacing: 3px;
-      margin-bottom: 20px;
-      opacity: 0; animation: fadeUp 0.6s 0.2s forwards;
-    }
-    .hero-tag::before { content: '> '; color: var(--purple); }
+    /* GAMES */
+    #games, #wip { padding:100px 20px; max-width:1200px; margin:0 auto; }
+    .games-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:28px; }
+    .game-card { background:var(--card-bg); border:1px solid rgba(142,45,226,0.25); border-radius:12px; overflow:hidden; position:relative; transition:transform 0.3s cubic-bezier(.17,.67,.38,1.4),border-color 0.3s,box-shadow 0.3s,opacity 0.5s ease; }
+    .game-card.will-animate { opacity:0; transform:translateY(30px); }
+    .game-card.visible { opacity:1 !important; transform:translateY(0) !important; }
+    .game-card:hover { transform:translateY(-8px) scale(1.01) !important; border-color:var(--purple); box-shadow:0 12px 40px rgba(142,45,226,0.35),0 0 0 1px rgba(142,45,226,0.2); }
+    .game-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--purple-dark),var(--purple),var(--pink)); transform:scaleX(0); transform-origin:left; transition:transform 0.3s ease; z-index:3; }
+    .game-card:hover::before { transform:scaleX(1); }
+    .card-img-wrap { position:relative; overflow:hidden; height:180px; background:#0a0a16; }
+    .card-img-wrap img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s ease,filter 0.3s; filter:saturate(0.85); }
+    .game-card:hover .card-img-wrap img { transform:scale(1.06); filter:saturate(1.1); }
+    .card-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(7,7,15,0.9) 0%,transparent 60%); }
+    .card-badge { position:absolute; top:12px; right:12px; font-family:'Press Start 2P',monospace; font-size:0.38rem; padding:5px 8px; border-radius:3px; letter-spacing:1px; }
+    .badge-done { background:rgba(80,250,123,0.15); color:var(--green); border:1px solid rgba(80,250,123,0.4); }
+    .badge-wip  { background:rgba(241,250,140,0.12); color:var(--yellow); border:1px solid rgba(241,250,140,0.35); }
+    .card-body { padding:20px; }
+    .card-title { font-family:'Press Start 2P',monospace; font-size:0.72rem; color:var(--pink); margin-bottom:10px; line-height:1.5; }
+    .card-desc  { font-family:'Rajdhani',sans-serif; font-size:1rem; color:#999; line-height:1.6; margin-bottom:16px; }
+    .card-footer { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .card-tags { display:flex; gap:6px; flex-wrap:wrap; }
+    .tag { font-family:'Press Start 2P',monospace; font-size:0.35rem; padding:4px 7px; background:rgba(139,233,253,0.08); border:1px solid rgba(139,233,253,0.2); color:var(--cyan); border-radius:2px; }
+    .play-btn { font-family:'Press Start 2P',monospace; font-size:0.45rem; padding:9px 14px; background:transparent; color:var(--green); border:1px solid var(--green); border-radius:4px; text-decoration:none; white-space:nowrap; transition:all 0.2s; position:relative; overflow:hidden; }
+    .play-btn::before { content:''; position:absolute; inset:0; background:var(--green); transform:translateX(-101%); transition:transform 0.2s; z-index:-1; }
+    .play-btn:hover { color:var(--bg); }
+    .play-btn:hover::before { transform:translateX(0); }
 
-    .hero-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: clamp(1.2rem, 4vw, 2.2rem);
-      line-height: 1.5;
-      margin-bottom: 16px;
-      opacity: 0; animation: fadeUp 0.6s 0.4s forwards;
-    }
-    .hero-title .name { color: var(--pink); display: block; }
-    .hero-title .role { color: var(--cyan); font-size: 0.6em; display: block; margin-top: 8px; }
+    /* WIP */
+    #wip { position:relative; }
+    #wip::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--yellow),transparent); }
+    #wip .game-card { border-color:rgba(241,250,140,0.15); }
+    #wip .game-card:hover { border-color:var(--yellow); box-shadow:0 12px 40px rgba(241,250,140,0.15); }
+    #wip .game-card::before { background:linear-gradient(90deg,#b8a200,var(--yellow),#b8a200); }
 
-    .hero-desc {
-      font-family: 'VT323', monospace;
-      font-size: 1.4rem; color: #bbb;
-      max-width: 600px; margin: 0 auto 40px;
-      line-height: 1.6;
-      opacity: 0; animation: fadeUp 0.6s 0.6s forwards;
-    }
+    /* TERMINAL */
+    .terminal { background:#060610; border:1px solid rgba(142,45,226,0.4); border-radius:10px; overflow:hidden; box-shadow:0 0 40px rgba(142,45,226,0.15); }
+    .terminal-bar { background:#0e0e1e; border-bottom:1px solid rgba(142,45,226,0.2); padding:12px 16px; display:flex; align-items:center; gap:8px; }
+    .t-dot { width:11px; height:11px; border-radius:50%; }
+    .t-red{background:#ff5f57} .t-yellow{background:#febc2e} .t-green{background:#28c840}
+    .t-title { flex:1; text-align:center; font-family:'Press Start 2P',monospace; font-size:0.45rem; color:#555; }
+    .terminal-body { padding:28px 28px 36px; }
+    .t-line { font-family:'VT323',monospace; font-size:1.3rem; line-height:2; color:#ccc; }
+    .t-prompt{color:var(--green)} .t-cmd{color:var(--cyan)}
+    .t-out { color:#aaa; padding-left:16px; display:block; }
+    .cursor-blink { display:inline-block; width:10px; height:1.1em; background:var(--green); vertical-align:text-bottom; animation:blink 1s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-    .hero-btns {
-      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
-      opacity: 0; animation: fadeUp 0.6s 0.8s forwards;
-    }
-    .btn {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem; padding: 14px 24px;
-      border-radius: 4px; text-decoration: none;
-      letter-spacing: 1px;
-      transition: all 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--purple-dark), var(--purple));
-      color: #fff; border: 1px solid var(--purple);
-      box-shadow: 0 0 20px rgba(142,45,226,0.4);
-    }
-    .btn-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 0 30px rgba(142,45,226,0.7);
-    }
-    .btn-secondary {
-      background: transparent;
-      color: var(--green); border: 1px solid var(--green);
-    }
-    .btn-secondary:hover {
-      background: var(--green); color: var(--bg);
-      transform: translateY(-3px);
-    }
+    /* CONTACT */
+    #contact { padding:100px 20px; background:var(--bg2); border-top:1px solid var(--border); }
+    .contact-wrap { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1.1fr; gap:48px; align-items:start; }
+    .social-links { display:flex; flex-direction:column; gap:12px; margin-top:20px; }
+    .social-card { display:flex; align-items:center; gap:16px; padding:16px 20px; background:var(--card-bg); border:1px solid rgba(142,45,226,0.2); border-radius:10px; text-decoration:none; transition:all 0.25s; position:relative; overflow:hidden; }
+    .social-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--purple); transform:scaleY(0); transform-origin:bottom; transition:transform 0.25s; }
+    .social-card:hover { border-color:var(--purple); transform:translateX(4px); background:#161628; }
+    .social-card:hover::before { transform:scaleY(1); }
+    .social-icon { width:40px; height:40px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .social-icon svg { width:20px; height:20px; }
+    .email-icon    { background:rgba(255,121,198,0.1); color:var(--pink); }
+    .linkedin-icon { background:rgba(10,102,194,0.15); color:#4a9eed; }
+    .github-icon   { background:rgba(248,248,242,0.08); color:#f0f0f0; }
+    .itchio-icon   { background:rgba(255,69,59,0.12); color:#ff6b5b; }
+    .social-info { flex:1; text-align:left; }
+    .social-name { font-family:'Press Start 2P',monospace; font-size:0.42rem; color:#666; display:block; margin-bottom:4px; letter-spacing:1px; }
+    .social-val  { font-family:'Rajdhani',sans-serif; font-size:1rem; color:#ddd; display:block; }
+    .social-arrow { font-size:1.1rem; color:#444; transition:color 0.2s,transform 0.2s; }
+    .social-card:hover .social-arrow { color:var(--purple); transform:translate(2px,-2px); }
+    .form-box { background:var(--card-bg); border:1px solid rgba(142,45,226,0.25); border-radius:12px; overflow:hidden; }
+    .form-header { padding:24px 28px 20px; border-bottom:1px solid rgba(142,45,226,0.15); background:rgba(74,0,224,0.05); }
+    .form-eyebrow { font-family:'Press Start 2P',monospace; font-size:0.42rem; color:var(--purple); letter-spacing:2px; display:block; margin-bottom:8px; }
+    .form-title { font-family:'Press Start 2P',monospace; font-size:0.72rem; color:#fff; line-height:1.6; }
+    form { padding:28px; display:flex; flex-direction:column; gap:20px; }
+    .field-group { display:flex; flex-direction:column; gap:8px; }
+    .field-label { font-family:'Press Start 2P',monospace; font-size:0.4rem; color:#666; letter-spacing:2px; }
+    .field-input { background:rgba(255,255,255,0.04); border:1px solid rgba(142,45,226,0.2); border-radius:6px; padding:12px 16px; color:#f0f0f8; font-family:'Rajdhani',sans-serif; font-size:1rem; transition:border-color 0.2s,box-shadow 0.2s; outline:none; resize:none; }
+    .field-input:focus { border-color:var(--purple); box-shadow:0 0 0 3px rgba(142,45,226,0.12); background:rgba(142,45,226,0.04); }
+    .field-input::placeholder { color:#444; }
+    .field-textarea { height:130px; }
+    .form-submit { font-family:'Press Start 2P',monospace; font-size:0.52rem; padding:16px; background:linear-gradient(135deg,var(--purple-dark),var(--purple)); color:#fff; border:none; border-radius:6px; letter-spacing:1px; box-shadow:0 0 20px rgba(142,45,226,0.3); transition:all 0.2s; }
+    .form-submit:hover { transform:translateY(-2px); box-shadow:0 0 32px rgba(142,45,226,0.55); }
+    .form-success { font-family:'Press Start 2P',monospace; font-size:0.48rem; color:var(--green); text-align:center; padding:14px; background:rgba(80,250,123,0.08); border:1px solid rgba(80,250,123,0.3); border-radius:6px; letter-spacing:1px; line-height:1.8; }
 
-    /* SCROLL INDICATOR */
-    .scroll-hint {
-      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
-      z-index: 2;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem; color: #555;
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      animation: bounce 2s infinite;
-    }
-    .scroll-arrow { width: 14px; height: 14px; border-right: 2px solid #555; border-bottom: 2px solid #555; transform: rotate(45deg); }
-    @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+    /* FOOTER */
+    footer { background:var(--bg); border-top:1px solid var(--border); padding:32px 20px; }
+    .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; }
+    .footer-copy { font-family:'Press Start 2P',monospace; font-size:0.45rem; color:#444; letter-spacing:1px; }
+    .footer-socials { display:flex; gap:16px; }
+    .footer-socials a { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.05); border:1px solid rgba(142,45,226,0.2); color:#666; transition:all 0.2s; text-decoration:none; }
+    .footer-socials a svg { width:16px; height:16px; }
+    .footer-socials a:hover { color:var(--purple); border-color:var(--purple); background:rgba(142,45,226,0.1); transform:translateY(-2px); }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── STATS BAR ─── */
-    #stats {
-      padding: 40px 20px;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .stats-inner {
-      max-width: 900px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
-      gap: 24px;
-    }
-    .stat-item { text-align: center; }
-    .stat-num {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 1.6rem; color: var(--green);
-      text-shadow: 0 0 12px var(--green);
-      display: block;
-    }
-    .stat-label {
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem; color: #777;
-      letter-spacing: 2px; margin-top: 4px;
-      display: block;
-    }
-
-    /* ─── SECTION HEADERS ─── */
-    .section-header {
-      text-align: center; margin-bottom: 48px;
-      position: relative;
-    }
-    .section-eyebrow {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem; color: var(--purple);
-      letter-spacing: 4px; margin-bottom: 12px;
-      display: block;
-    }
-    .section-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: clamp(0.9rem, 2.5vw, 1.3rem);
-      color: #fff; margin-bottom: 16px;
-      display: block;
-    }
-    .section-line {
-      width: 60px; height: 3px;
-      background: linear-gradient(90deg, var(--purple), var(--pink));
-      margin: 0 auto;
-    }
-
-    /* ─── ABOUT ─── */
-    #about {
-      padding: 100px 20px;
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1.4fr;
-      gap: 60px; align-items: center;
-    }
-    .about-avatar-wrap {
-      position: relative;
-    }
-    .about-avatar {
-      width: 100%;
-      aspect-ratio: 1;
-      background: var(--card-bg);
-      border: 2px solid var(--purple);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 6rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .about-avatar::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(74,0,224,0.2), rgba(142,45,226,0.1));
-    }
-    .avatar-scanline {
-      position: absolute; inset: 0;
-      background: repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(142,45,226,0.04) 4px, rgba(142,45,226,0.04) 8px);
-    }
-    .avatar-corner {
-      position: absolute; width: 16px; height: 16px;
-      border-color: var(--green); border-style: solid;
-    }
-    .avatar-corner.tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
-    .avatar-corner.tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; }
-    .avatar-corner.bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; }
-    .avatar-corner.br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
-
-    .about-text .section-header { text-align: left; }
-    .about-text .section-line { margin: 0; }
-    .about-text p {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.15rem; line-height: 1.8; color: #bbb;
-      margin-bottom: 16px;
-    }
-    .skill-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
-    .chip {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem; padding: 7px 12px;
-      border-radius: 3px; background: rgba(142,45,226,0.1);
-      border: 1px solid rgba(142,45,226,0.4);
-      color: var(--cyan);
-      transition: all 0.2s;
-    }
-    .chip:hover { background: rgba(142,45,226,0.25); border-color: var(--purple); color: #fff; }
-
-    /* ─── GAMES SECTIONS ─── */
-    #games, #wip {
-      padding: 100px 20px;
-      max-width: 1200px; margin: 0 auto;
-    }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 28px;
-    }
-
-    /* ─── GAME CARD ─── */
-    .game-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(142,45,226,0.25);
-      border-radius: 12px;
-      overflow: hidden;
-      position: relative;
-      transition: transform 0.3s cubic-bezier(.17,.67,.38,1.4), border-color 0.3s, box-shadow 0.3s, opacity 0.5s ease;
-    }
-    .game-card.will-animate {
-      opacity: 0; transform: translateY(30px);
-    }
-    .game-card.visible {
-      opacity: 1 !important; transform: translateY(0) !important;
-    }
-    .game-card:hover {
-      transform: translateY(-8px) scale(1.01) !important;
-      border-color: var(--purple);
-      box-shadow: 0 12px 40px rgba(142,45,226,0.35), 0 0 0 1px rgba(142,45,226,0.2);
-    }
-
-    /* CARD GLITCH on hover */
-    .game-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: linear-gradient(90deg, var(--purple-dark), var(--purple), var(--pink));
-      transform: scaleX(0); transform-origin: left;
-      transition: transform 0.3s ease;
-      z-index: 3;
-    }
-    .game-card:hover::before { transform: scaleX(1); }
-
-    .card-img-wrap {
-      position: relative; overflow: hidden;
-      height: 180px; background: #0a0a16;
-    }
-    .card-img-wrap img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease, filter 0.3s;
-      filter: saturate(0.85);
-    }
-    .game-card:hover .card-img-wrap img {
-      transform: scale(1.06);
-      filter: saturate(1.1);
-    }
-    .card-img-placeholder {
-      width: 100%; height: 100%;
-      background: linear-gradient(135deg, #1a0a30, #0d0d20);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3.5rem;
-    }
-    .card-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(7,7,15,0.9) 0%, transparent 60%);
-    }
-    .card-badge {
-      position: absolute; top: 12px; right: 12px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.38rem; padding: 5px 8px;
-      border-radius: 3px; letter-spacing: 1px;
-    }
-    .badge-done { background: rgba(80,250,123,0.15); color: var(--green); border: 1px solid rgba(80,250,123,0.4); }
-    .badge-wip { background: rgba(241,250,140,0.12); color: var(--yellow); border: 1px solid rgba(241,250,140,0.35); }
-
-    .card-body { padding: 20px; }
-    .card-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.72rem; color: var(--pink);
-      margin-bottom: 10px; line-height: 1.5;
-    }
-    .card-desc {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem; color: #999; line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .card-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px;
-    }
-    .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-    .tag {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.35rem; padding: 4px 7px;
-      background: rgba(139,233,253,0.08);
-      border: 1px solid rgba(139,233,253,0.2);
-      color: var(--cyan); border-radius: 2px;
-    }
-    .play-btn {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem;
-      padding: 9px 14px;
-      background: transparent;
-      color: var(--green); border: 1px solid var(--green);
-      border-radius: 4px; text-decoration: none;
-      white-space: nowrap;
-      transition: all 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .play-btn::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: var(--green); transform: translateX(-101%);
-      transition: transform 0.2s;
-      z-index: -1;
-    }
-    .play-btn:hover { color: var(--bg); }
-    .play-btn:hover::before { transform: translateX(0); }
-
-    /* ─── TERMINAL / CONTACT ─── */
-    #contact {
-      padding: 100px 20px;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-    }
-    .terminal-wrap {
-      max-width: 720px; margin: 0 auto;
-    }
-    .terminal {
-      background: #060610;
-      border: 1px solid rgba(142,45,226,0.4);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 40px rgba(142,45,226,0.15), 0 0 80px rgba(74,0,224,0.08);
-    }
-    .terminal-bar {
-      background: #0e0e1e;
-      border-bottom: 1px solid rgba(142,45,226,0.2);
-      padding: 12px 16px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .t-dot { width: 11px; height: 11px; border-radius: 50%; }
-    .t-red { background: #ff5f57; }
-    .t-yellow { background: #febc2e; }
-    .t-green { background: #28c840; }
-    .t-title {
-      flex: 1; text-align: center;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem; color: #555;
-    }
-    .terminal-body { padding: 28px 28px 36px; }
-    .t-line {
-      font-family: 'VT323', monospace;
-      font-size: 1.3rem; line-height: 2;
-      color: #ccc;
-    }
-    .t-prompt { color: var(--green); }
-    .t-cmd { color: var(--cyan); }
-    .t-out { color: #aaa; padding-left: 16px; display: block; }
-    .t-link { color: var(--purple); text-decoration: none; }
-    .t-link:hover { color: var(--pink); }
-    .cursor-blink {
-      display: inline-block; width: 10px; height: 1.1em;
-      background: var(--green); vertical-align: text-bottom;
-      animation: blink 1s step-end infinite;
-    }
-    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-
-    /* ─── FOOTER ─── */
-    footer {
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-      padding: 32px 20px;
-    }
-    .footer-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 16px;
-    }
-    .footer-copy {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem; color: #444; letter-spacing: 1px;
-    }
-    .footer-socials { display: flex; gap: 16px; }
-    .footer-socials a {
-      width: 36px; height: 36px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(142,45,226,0.2);
-      color: #666; transition: all 0.2s;
-    }
-    .footer-socials a svg { width: 16px; height: 16px; }
-    .footer-socials a:hover { color: var(--purple); border-color: var(--purple); background: rgba(142,45,226,0.1); transform: translateY(-2px); }
-
-    /* ─── SECTION WRAPPER ─── */
-    .section-wrap { padding: 100px 20px; }
-
-    /* ─── GLITCH EFFECT on title hover ─── */
-    .glitch {
-      position: relative; display: inline-block;
-    }
-    .glitch:hover::before, .glitch:hover::after {
-      content: attr(data-text);
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%;
-      opacity: 0.8;
-    }
-    .glitch:hover::before {
-      color: var(--pink); clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
-      transform: translateX(-2px); animation: glitch1 0.3s infinite;
-    }
-    .glitch:hover::after {
-      color: var(--cyan); clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
-      transform: translateX(2px); animation: glitch2 0.3s infinite;
-    }
-    @keyframes glitch1 { 0%,100% { transform: translateX(-2px); } 50% { transform: translateX(2px); } }
-    @keyframes glitch2 { 0%,100% { transform: translateX(2px); } 50% { transform: translateX(-2px); } }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 768px) {
-      nav { padding: 14px 20px; }
-      .nav-links { gap: 16px; }
-      .nav-links a { font-size: 0.4rem; }
-      #about { grid-template-columns: 1fr; }
-      .about-avatar { max-width: 240px; margin: 0 auto; }
-    }
-    @media (max-width: 500px) {
-      .nav-links { display: none; }
-    }
-
-    /* ─── CONTACT SECTION ─── */
-    #contact {
-      padding: 100px 20px;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-    }
-    .contact-wrap {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr 1.1fr;
-      gap: 48px; align-items: start;
-    }
-    .social-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
-    .social-card {
-      display: flex; align-items: center; gap: 16px;
-      padding: 16px 20px;
-      background: var(--card-bg);
-      border: 1px solid rgba(142,45,226,0.2);
-      border-radius: 10px;
-      text-decoration: none;
-      transition: all 0.25s;
-      position: relative; overflow: hidden;
-    }
-    .social-card::before {
-      content: '';
-      position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-      background: var(--purple);
-      transform: scaleY(0); transform-origin: bottom;
-      transition: transform 0.25s;
-    }
-    .social-card:hover { border-color: var(--purple); transform: translateX(4px); background: #161628; }
-    .social-card:hover::before { transform: scaleY(1); }
-    .social-icon {
-      width: 40px; height: 40px; border-radius: 8px;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .social-icon svg { width: 20px; height: 20px; }
-    .email-icon    { background: rgba(255,121,198,0.1); color: var(--pink); }
-    .linkedin-icon { background: rgba(10,102,194,0.15); color: #4a9eed; }
-    .github-icon   { background: rgba(248,248,242,0.08); color: #f0f0f0; }
-    .itchio-icon   { background: rgba(255,69,59,0.12); color: #ff6b5b; }
-    .social-info { flex: 1; text-align: left; }
-    .social-name {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.42rem; color: #666; display: block;
-      margin-bottom: 4px; letter-spacing: 1px;
-    }
-    .social-val {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1rem; color: #ddd; display: block;
-    }
-    .social-arrow { font-size: 1.1rem; color: #444; transition: color 0.2s, transform 0.2s; }
-    .social-card:hover .social-arrow { color: var(--purple); transform: translate(2px,-2px); }
-    .form-box {
-      background: var(--card-bg);
-      border: 1px solid rgba(142,45,226,0.25);
-      border-radius: 12px; overflow: hidden;
-    }
-    .form-header {
-      padding: 24px 28px 20px;
-      border-bottom: 1px solid rgba(142,45,226,0.15);
-      background: rgba(74,0,224,0.05);
-    }
-    .form-eyebrow {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.42rem; color: var(--purple);
-      letter-spacing: 2px; display: block; margin-bottom: 8px;
-    }
-    .form-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.72rem; color: #fff; line-height: 1.6;
-    }
-    form { padding: 28px; display: flex; flex-direction: column; gap: 20px; }
-    .field-group { display: flex; flex-direction: column; gap: 8px; }
-    .field-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem; color: #666; letter-spacing: 2px;
-    }
-    .field-input {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(142,45,226,0.2);
-      border-radius: 6px; padding: 12px 16px;
-      color: #f0f0f8;
-      font-family: 'Rajdhani', sans-serif; font-size: 1rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      outline: none; resize: none;
-    }
-    .field-input:focus {
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px rgba(142,45,226,0.12);
-      background: rgba(142,45,226,0.04);
-    }
-    .field-input::placeholder { color: #444; }
-    .field-textarea { height: 130px; }
-    .form-submit {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.52rem; padding: 16px;
-      background: linear-gradient(135deg, var(--purple-dark), var(--purple));
-      color: #fff; border: none; border-radius: 6px;
-      letter-spacing: 1px;
-      box-shadow: 0 0 20px rgba(142,45,226,0.3);
-      transition: all 0.2s;
-    }
-    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(142,45,226,0.55); }
-    .form-submit:active { transform: translateY(0); }
-    .form-success {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.48rem; color: var(--green);
-      text-align: center; padding: 14px;
-      background: rgba(80,250,123,0.08);
-      border: 1px solid rgba(80,250,123,0.3);
-      border-radius: 6px; letter-spacing: 1px; line-height: 1.8;
-    }
-    @media (max-width: 860px) {
-      .contact-wrap { grid-template-columns: 1fr; }
-    }
-
-    /* ─── WIP SECTION tint ─── */
-    #wip { position: relative; }
-    #wip::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--yellow), transparent);
-    }
-    #wip .game-card { border-color: rgba(241,250,140,0.15); }
-    #wip .game-card:hover { border-color: var(--yellow); box-shadow: 0 12px 40px rgba(241,250,140,0.15); }
-    #wip .game-card::before {
-      background: linear-gradient(90deg, #b8a200, var(--yellow), #b8a200);
-    }
+    @media (max-width:768px) {
+      nav { padding:14px 20px; } .nav-links { gap:16px; } .nav-links a { font-size:0.4rem; }
+      #about { grid-template-columns:1fr; } .about-avatar { max-width:240px; margin:0 auto; }
+      .contact-wrap { grid-template-columns:1fr; }
+    }
+    @media (max-width:500px) { .nav-links { display:none; } }
   </style>
 </head>
 <body class="pixel-grid-bg">
 
-  <!-- CUSTOM CURSOR -->
-  <div id="cursor">
-    <div class="dot"></div>
-    <div class="ring"></div>
-  </div>
+  <div id="cursor"><div class="dot"></div><div class="ring"></div></div>
 
-  <!-- NAV -->
   <nav id="navbar">
     <a href="#hero" class="nav-logo">OSMAN.DEV</a>
     <ul class="nav-links">
@@ -712,7 +208,6 @@
     </ul>
   </nav>
 
-  <!-- HERO -->
   <section id="hero">
     <div class="hero-bg">
       <canvas id="stars"></canvas>
@@ -725,53 +220,31 @@
         <span class="name">— OSMAN</span>
         <span class="role">UNITY DEV &amp; WORLD BUILDER</span>
       </h1>
-      <p class="hero-desc">
-        I build worlds from nothing. Pixel by pixel,<br>
-        mechanic by mechanic — one complete experience at a time.
-      </p>
+      <p class="hero-desc">I build worlds from nothing. Pixel by pixel,<br>mechanic by mechanic — one complete experience at a time.</p>
       <div class="hero-btns">
-        <a href="#games" class="btn btn-primary">▶ VIEW GAMES</a>
+        <a href="#games" class="btn btn-primary">&#9654; VIEW GAMES</a>
         <a href="https://osmodev.itch.io/" target="_blank" class="btn btn-secondary">ITCH.IO PROFILE</a>
       </div>
     </div>
-    <div class="scroll-hint">
-      <span>SCROLL</span>
-      <div class="scroll-arrow"></div>
-    </div>
+    <div class="scroll-hint"><span>SCROLL</span><div class="scroll-arrow"></div></div>
   </section>
 
-  <!-- STATS -->
   <section id="stats">
     <div class="stats-inner">
-      <div class="stat-item">
-        <span class="stat-num" data-count="5">0</span>
-        <span class="stat-label">COMPLETED GAMES</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" data-count="2">0</span>
-        <span class="stat-label">IN DEVELOPMENT</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" data-count="3">0</span>
-        <span class="stat-label">YEARS BUILDING</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" data-count="100">0</span>
-        <span class="stat-label">% PASSION</span>
-      </div>
+      <div class="stat-item"><span class="stat-num" data-count="5">0</span><span class="stat-label">COMPLETED GAMES</span></div>
+      <div class="stat-item"><span class="stat-num" data-count="2">0</span><span class="stat-label">IN DEVELOPMENT</span></div>
+      <div class="stat-item"><span class="stat-num" data-count="3">0</span><span class="stat-label">YEARS BUILDING</span></div>
+      <div class="stat-item"><span class="stat-num" data-count="100">0</span><span class="stat-label">% PASSION</span></div>
     </div>
   </section>
 
-  <!-- ABOUT -->
-  <section id="about" class="noise">
+  <section id="about">
     <div class="about-avatar-wrap">
       <div class="about-avatar">
-        <img src="img/avatar.jpg" alt="Osman" style="width:100%;height:100%;object-fit:cover;border-radius:10px;position:relative;z-index:2;">
+        <img src="img/avatar.jpg" alt="Osman">
         <div class="avatar-scanline"></div>
-        <div class="avatar-corner tl"></div>
-        <div class="avatar-corner tr"></div>
-        <div class="avatar-corner bl"></div>
-        <div class="avatar-corner br"></div>
+        <div class="avatar-corner tl"></div><div class="avatar-corner tr"></div>
+        <div class="avatar-corner bl"></div><div class="avatar-corner br"></div>
       </div>
     </div>
     <div class="about-text">
@@ -780,263 +253,136 @@
         <span class="section-title">Indie Dev. World Shaper.</span>
         <div class="section-line"></div>
       </div>
-      <p>Hi, I'm <strong style="color:var(--pink)">Osman</strong> — an indie game developer who's obsessed with creating worlds that feel alive.</p>
-      <p>I specialize in <strong style="color:var(--cyan)">Unity</strong> and love experimenting with unique mechanics, tight controls, and satisfying feedback loops. Every project I ship — no matter how small — is a complete, polished experience.</p>
+      <p>Hi, I'm <strong style="color:var(--pink)">Osman</strong> — an indie game developer obsessed with creating worlds that feel alive.</p>
+      <p>I specialize in <strong style="color:var(--cyan)">Unity</strong> and love experimenting with unique mechanics, tight controls, and satisfying feedback loops. Every project I ship is a complete, polished experience.</p>
       <p>One level. One pixel. One sound at a time.</p>
       <div class="skill-chips">
-        <span class="chip">UNITY</span>
-        <span class="chip">C#</span>
-        <span class="chip">2D PLATFORMER</span>
-        <span class="chip">3D GAMES</span>
-        <span class="chip">GAME DESIGN</span>
-        <span class="chip">ADMOB</span>
-        <span class="chip">MOBILE</span>
-        <span class="chip">PUZZLE</span>
+        <span class="chip">UNITY</span><span class="chip">C#</span><span class="chip">2D PLATFORMER</span>
+        <span class="chip">3D GAMES</span><span class="chip">GAME DESIGN</span><span class="chip">ADMOB</span>
+        <span class="chip">MOBILE</span><span class="chip">PUZZLE</span>
       </div>
     </div>
   </section>
 
-  <!-- COMPLETED GAMES -->
   <section id="games">
     <div class="section-header">
       <span class="section-eyebrow">// SELECT GAME</span>
-      <span class="section-title">🏁 COMPLETED GAMES</span>
+      <span class="section-title">&#127937; COMPLETED GAMES</span>
       <div class="section-line"></div>
     </div>
     <div class="games-grid">
-
       <div class="game-card">
-        <div class="card-img-wrap">
-          <img src="img/void-timeless.jpg" alt="VOID: Timeless" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease,filter 0.3s;filter:saturate(0.85);">
-          <div class="card-overlay"></div>
-          <span class="card-badge badge-done">RELEASED</span>
-        </div>
+        <div class="card-img-wrap"><img src="img/void-timeless.jpg" alt="VOID: Timeless"><div class="card-overlay"></div><span class="card-badge badge-done">RELEASED</span></div>
         <div class="card-body">
           <h3 class="card-title">VOID: TIMELESS</h3>
           <p class="card-desc">A fast-paced sci-fi action game built around time manipulation. Create echoes of your past self, dash through space, and survive endless cosmic waves.</p>
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag">SCI-FI</span>
-              <span class="tag">ACTION</span>
-              <span class="tag">TIME</span>
-            </div>
-            <a href="https://osmodev.itch.io/void-timeless" target="_blank" class="play-btn">▶ PLAY</a>
-          </div>
+          <div class="card-footer"><div class="card-tags"><span class="tag">SCI-FI</span><span class="tag">ACTION</span><span class="tag">TIME</span></div><a href="https://osmodev.itch.io/void-timeless" target="_blank" class="play-btn">&#9654; PLAY</a></div>
         </div>
       </div>
-
       <div class="game-card">
-        <div class="card-img-wrap">
-          <img src="img/2d-tower-defense.jpg" alt="2D Tower Defense" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease,filter 0.3s;filter:saturate(0.85);">
-          <div class="card-overlay"></div>
-          <span class="card-badge badge-done">RELEASED</span>
-        </div>
+        <div class="card-img-wrap"><img src="img/2d-tower-defense.jpg" alt="2D Tower Defense"><div class="card-overlay"></div><span class="card-badge badge-done">RELEASED</span></div>
         <div class="card-body">
           <h3 class="card-title">2D TOWER DEFENSE</h3>
           <p class="card-desc">Defend your base across 25 handcrafted levels with towers, heroes, and enemies that evolve with every wave.</p>
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag">STRATEGY</span>
-              <span class="tag">TOWER DEF</span>
-            </div>
-            <a href="https://osmodev.itch.io/2d-tower-defense" target="_blank" class="play-btn">▶ PLAY</a>
-          </div>
+          <div class="card-footer"><div class="card-tags"><span class="tag">STRATEGY</span><span class="tag">TOWER DEF</span></div><a href="https://osmodev.itch.io/2d-tower-defense" target="_blank" class="play-btn">&#9654; PLAY</a></div>
         </div>
       </div>
-
       <div class="game-card">
-        <div class="card-img-wrap">
-          <img src="img/roller-coaster-theme-park.png" alt="Roller Coaster Theme Park" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease,filter 0.3s;filter:saturate(0.85);">
-          <div class="card-overlay"></div>
-          <span class="card-badge badge-done">RELEASED</span>
-        </div>
+        <div class="card-img-wrap"><img src="img/roller-coaster-theme-park.png" alt="Roller Coaster Theme Park"><div class="card-overlay"></div><span class="card-badge badge-done">RELEASED</span></div>
         <div class="card-body">
           <h3 class="card-title">ROLLER COASTER THEME PARK</h3>
           <p class="card-desc">Build and ride roller coasters in a full 3D amusement park. Unlock new rides, tracks, and coaster cars with AdMob-integrated rewards.</p>
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag">3D</span>
-              <span class="tag">MOBILE</span>
-              <span class="tag">BUILD</span>
-            </div>
-            <a href="https://osmodev.itch.io/roller-coaster-theme-park" target="_blank" class="play-btn">▶ PLAY</a>
-          </div>
+          <div class="card-footer"><div class="card-tags"><span class="tag">3D</span><span class="tag">MOBILE</span><span class="tag">BUILD</span></div><a href="https://osmodev.itch.io/roller-coaster-theme-park" target="_blank" class="play-btn">&#9654; PLAY</a></div>
         </div>
       </div>
-
       <div class="game-card">
-        <div class="card-img-wrap">
-          <img src="img/color-balls.jpg" alt="Color Balls" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease,filter 0.3s;filter:saturate(0.85);">
-          <div class="card-overlay"></div>
-          <span class="card-badge badge-done">RELEASED</span>
-        </div>
+        <div class="card-img-wrap"><img src="img/color-balls.jpg" alt="Color Balls"><div class="card-overlay"></div><span class="card-badge badge-done">RELEASED</span></div>
         <div class="card-body">
           <h3 class="card-title">COLOR BALLS</h3>
           <p class="card-desc">Sort and align colorful balls to match the pattern — a satisfying puzzle game with chill vibes and a meditative flow.</p>
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag">PUZZLE</span>
-              <span class="tag">CASUAL</span>
-            </div>
-            <a href="https://osmodev.itch.io/color-balls" target="_blank" class="play-btn">▶ PLAY</a>
-          </div>
+          <div class="card-footer"><div class="card-tags"><span class="tag">PUZZLE</span><span class="tag">CASUAL</span></div><a href="https://osmodev.itch.io/color-balls" target="_blank" class="play-btn">&#9654; PLAY</a></div>
         </div>
       </div>
-
       <div class="game-card">
-        <div class="card-img-wrap">
-          <img src="img/bathtime-word-bubbles.jpg" alt="Bathtime Word Bubbles" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease,filter 0.3s;filter:saturate(0.85);">
-          <div class="card-overlay"></div>
-          <span class="card-badge badge-done">RELEASED</span>
-        </div>
+        <div class="card-img-wrap"><img src="img/bathtime-word-bubbles.jpg" alt="Bathtime Word Bubbles"><div class="card-overlay"></div><span class="card-badge badge-done">RELEASED</span></div>
         <div class="card-body">
           <h3 class="card-title">BATHTIME WORD BUBBLES</h3>
           <p class="card-desc">Guess words from pictures and pop bubbles in this cute, casual word puzzle perfect for quick sessions.</p>
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag">WORD</span>
-              <span class="tag">CASUAL</span>
-              <span class="tag">KIDS</span>
-            </div>
-            <a href="https://osmodev.itch.io/bathtime-word-bubbles" target="_blank" class="play-btn">▶ PLAY</a>
-          </div>
+          <div class="card-footer"><div class="card-tags"><span class="tag">WORD</span><span class="tag">CASUAL</span><span class="tag">KIDS</span></div><a href="https://osmodev.itch.io/bathtime-word-bubbles" target="_blank" class="play-btn">&#9654; PLAY</a></div>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- IN DEVELOPMENT -->
   <section id="wip">
     <div class="section-header">
       <span class="section-eyebrow">// WORK IN PROGRESS</span>
-      <span class="section-title">🚧 UNDER DEVELOPMENT</span>
-      <div class="section-line" style="background: linear-gradient(90deg, #b8a200, var(--yellow))"></div>
+      <span class="section-title">&#128679; UNDER DEVELOPMENT</span>
+      <div class="section-line" style="background:linear-gradient(90deg,#b8a200,var(--yellow))"></div>
     </div>
-    <div class="games-grid" style="max-width: 700px; margin: 0 auto;">
-
+    <div class="games-grid" style="max-width:700px;margin:0 auto;">
       <div class="game-card">
-        <div class="card-img-wrap">
-          <img src="img/hero-vanished.jpg" alt="A Hero Vanished in Shadows" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease,filter 0.3s;filter:saturate(0.85);">
-          <div class="card-overlay"></div>
-          <span class="card-badge badge-wip">IN DEV</span>
-        </div>
+        <div class="card-img-wrap"><img src="img/hero-vanished.jpg" alt="A Hero Vanished in Shadows"><div class="card-overlay"></div><span class="card-badge badge-wip">IN DEV</span></div>
         <div class="card-body">
-          <h3 class="card-title" style="color: var(--yellow)">A HERO VANISHED IN SHADOWS</h3>
+          <h3 class="card-title" style="color:var(--yellow)">A HERO VANISHED IN SHADOWS</h3>
           <p class="card-desc">A roguelike 2D platformer — battle through endless darkness, collect power-ups, and face dangers lurking in every shadow.</p>
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag">ROGUELIKE</span>
-              <span class="tag">PLATFORMER</span>
-              <span class="tag">2D</span>
-            </div>
-            <a href="https://osmodev.itch.io/a-hero-vanished-in-shadows" target="_blank" class="play-btn" style="color:var(--yellow); border-color:var(--yellow)">▶ PLAY</a>
-          </div>
+          <div class="card-footer"><div class="card-tags"><span class="tag">ROGUELIKE</span><span class="tag">PLATFORMER</span><span class="tag">2D</span></div><a href="https://osmodev.itch.io/a-hero-vanished-in-shadows" target="_blank" class="play-btn" style="color:var(--yellow);border-color:var(--yellow)">&#9654; PLAY</a></div>
         </div>
       </div>
-
       <div class="game-card">
-        <div class="card-img-wrap">
-          <img src="img/supah-boi.jpg" alt="Supah Boi Runner" style="width:100%;height:100%;object-fit:cover;transition:transform 0.5s ease,filter 0.3s;filter:saturate(0.85);">
-          <div class="card-overlay"></div>
-          <span class="card-badge badge-wip">IN DEV</span>
-        </div>
+        <div class="card-img-wrap"><img src="img/supah-boi.jpg" alt="Supah Boi Runner"><div class="card-overlay"></div><span class="card-badge badge-wip">IN DEV</span></div>
         <div class="card-body">
-          <h3 class="card-title" style="color: var(--yellow)">SUPAH BOI RUNNER</h3>
+          <h3 class="card-title" style="color:var(--yellow)">SUPAH BOI RUNNER</h3>
           <p class="card-desc">A 3D platformer where you jump, float, and dodge traps to collect coins and survive moving platforms.</p>
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag">3D</span>
-              <span class="tag">RUNNER</span>
-              <span class="tag">PLATFORMER</span>
-            </div>
-            <a href="https://osmodev.itch.io/supah-boi-runner" target="_blank" class="play-btn" style="color:var(--yellow); border-color:var(--yellow)">▶ PLAY</a>
-          </div>
+          <div class="card-footer"><div class="card-tags"><span class="tag">3D</span><span class="tag">RUNNER</span><span class="tag">PLATFORMER</span></div><a href="https://osmodev.itch.io/supah-boi-runner" target="_blank" class="play-btn" style="color:var(--yellow);border-color:var(--yellow)">&#9654; PLAY</a></div>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- CONTACT SECTION -->
   <section id="contact">
     <div class="section-header">
       <span class="section-eyebrow">// GET IN TOUCH</span>
       <span class="section-title">CONTACT</span>
       <div class="section-line"></div>
     </div>
-
     <div class="contact-wrap">
-
-      <!-- LEFT: Terminal + Social Links -->
       <div class="contact-left">
         <div class="terminal">
           <div class="terminal-bar">
-            <div class="t-dot t-red"></div>
-            <div class="t-dot t-yellow"></div>
-            <div class="t-dot t-green"></div>
-            <span class="t-title">osman@links ~ </span>
+            <div class="t-dot t-red"></div><div class="t-dot t-yellow"></div><div class="t-dot t-green"></div>
+            <span class="t-title">osman@links ~</span>
           </div>
           <div class="terminal-body">
             <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat contacts.txt</span></div>
-            <span class="t-out" style="margin-top:4px">
-              Status: <span style="color:var(--green)">ONLINE ✓</span><br>
-              Available for: <span style="color:var(--cyan)">Collabs &amp; Projects</span>
-            </span>
+            <span class="t-out">Status: <span style="color:var(--green)">ONLINE &#10003;</span></span>
+            <span class="t-out">Available for: <span style="color:var(--cyan)">Collabs &amp; Projects</span></span>
             <div class="t-line" style="margin-top:10px"><span class="t-prompt">$ </span><span class="cursor-blink"></span></div>
           </div>
         </div>
-
         <div class="social-links">
-
-          <a href="/cdn-cgi/l/email-protection#731c001e121d00121f16161e424b33141e121a1f5d101c1e" class="social-card">
-            <div class="social-icon email-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            </div>
-            <div class="social-info">
-              <span class="social-name">EMAIL</span>
-              <span class="social-val"><span class="__cf_email__" data-cfemail="d6b9a5bbb7b8a5b7bab3b3bbe7ee96b1bbb7bfbaf8b5b9bb">[email&#160;protected]</span></span>
-            </div>
-            <span class="social-arrow">↗</span>
+          <a href="mailto:osmansaleem18@gmail.com" class="social-card">
+            <div class="social-icon email-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+            <div class="social-info"><span class="social-name">EMAIL</span><span class="social-val">osmansaleem18@gmail.com</span></div>
+            <span class="social-arrow">&#8599;</span>
           </a>
-
           <a href="https://www.linkedin.com/in/usmansaleem1997/" target="_blank" class="social-card">
-            <div class="social-icon linkedin-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-            </div>
-            <div class="social-info">
-              <span class="social-name">LINKEDIN</span>
-              <span class="social-val">Usman S.</span>
-            </div>
-            <span class="social-arrow">↗</span>
+            <div class="social-icon linkedin-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
+            <div class="social-info"><span class="social-name">LINKEDIN</span><span class="social-val">Usman S.</span></div>
+            <span class="social-arrow">&#8599;</span>
           </a>
-
           <a href="https://github.com/GameDevOsman" target="_blank" class="social-card">
-            <div class="social-icon github-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-            </div>
-            <div class="social-info">
-              <span class="social-name">GITHUB</span>
-              <span class="social-val">GameDevOsman</span>
-            </div>
-            <span class="social-arrow">↗</span>
+            <div class="social-icon github-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></div>
+            <div class="social-info"><span class="social-name">GITHUB</span><span class="social-val">GameDevOsman</span></div>
+            <span class="social-arrow">&#8599;</span>
           </a>
-
           <a href="https://osmodev.itch.io/" target="_blank" class="social-card">
-            <div class="social-icon itchio-icon">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.302 1.22 2.44 2.325 2.44 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.106 2.41 2.437 2.41h.028c1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.436 2.41C22.78 8.42 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612C19.948 1 12.533 1 12 1c-.533 0-7.948 0-8.87.338zm8.64 8.65c-.55.002-1.08.05-1.52.17-1.836.494-2.154 1.53-2.154 3.814v2.033s-.67-.02-1.264.17c-1.115.36-1.196 1.116-1.196 1.624 0 0-.037 1.363 1.69 1.796.422.107.79.17 1.107.194.616.05.983.013.983.013s.346 1.466 1.254 2.107c1.07.762 2.617.703 4.263.007.9-.385 1.544-1.504 1.773-2.104 0 0 .373.034.983-.013.317-.024.685-.087 1.107-.194 1.726-.433 1.69-1.796 1.69-1.796 0-.508-.082-1.264-1.197-1.624-.594-.19-1.264-.17-1.264-.17V13.97c0-2.284-.32-3.32-2.154-3.815-.44-.118-.97-.166-1.52-.168h-.78z"/></svg>
-            </div>
-            <div class="social-info">
-              <span class="social-name">ITCH.IO</span>
-              <span class="social-val">osmodev.itch.io</span>
-            </div>
-            <span class="social-arrow">↗</span>
+            <div class="social-icon itchio-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.302 1.22 2.44 2.325 2.44 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.106 2.41 2.437 2.41h.028c1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.436 2.41C22.78 8.42 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612C19.948 1 12.533 1 12 1c-.533 0-7.948 0-8.87.338zm8.64 8.65c-.55.002-1.08.05-1.52.17-1.836.494-2.154 1.53-2.154 3.814v2.033s-.67-.02-1.264.17c-1.115.36-1.196 1.116-1.196 1.624 0 0-.037 1.363 1.69 1.796.422.107.79.17 1.107.194.616.05.983.013.983.013s.346 1.466 1.254 2.107c1.07.762 2.617.703 4.263.007.9-.385 1.544-1.504 1.773-2.104 0 0 .373.034.983-.013.317-.024.685-.087 1.107-.194 1.726-.433 1.69-1.796 1.69-1.796 0-.508-.082-1.264-1.197-1.624-.594-.19-1.264-.17-1.264-.17V13.97c0-2.284-.32-3.32-2.154-3.815-.44-.118-.97-.166-1.52-.168h-.78z"/></svg></div>
+            <div class="social-info"><span class="social-name">ITCH.IO</span><span class="social-val">osmodev.itch.io</span></div>
+            <span class="social-arrow">&#8599;</span>
           </a>
-
         </div>
       </div>
-
-      <!-- RIGHT: Contact Form -->
       <div class="contact-right">
         <div class="form-box">
           <div class="form-header">
@@ -1044,144 +390,95 @@
             <h3 class="form-title">Let's Build Something</h3>
           </div>
           <form id="contactForm" onsubmit="handleSubmit(event)">
-            <div class="field-group">
-              <label class="field-label">YOUR NAME</label>
-              <input type="text" class="field-input" placeholder="Player One" required />
-            </div>
-            <div class="field-group">
-              <label class="field-label">YOUR EMAIL</label>
-              <input type="email" class="field-input" placeholder="you@example.com" required />
-            </div>
-            <div class="field-group">
-              <label class="field-label">MESSAGE</label>
-              <textarea class="field-input field-textarea" placeholder="Hey Osman, I want to collaborate on..." required></textarea>
-            </div>
-            <button type="submit" class="form-submit">
-              <span class="submit-idle">▶ SEND MESSAGE</span>
-              <span class="submit-sending" style="display:none">TRANSMITTING...</span>
-            </button>
-            <div id="form-success" style="display:none" class="form-success">
-              ✓ MESSAGE RECEIVED! I'll get back to you soon.
-            </div>
+            <div class="field-group"><label class="field-label">YOUR NAME</label><input type="text" class="field-input" placeholder="Player One" required></div>
+            <div class="field-group"><label class="field-label">YOUR EMAIL</label><input type="email" class="field-input" placeholder="you@example.com" required></div>
+            <div class="field-group"><label class="field-label">MESSAGE</label><textarea class="field-input field-textarea" placeholder="Hey Osman, I want to collaborate on..." required></textarea></div>
+            <button type="submit" class="form-submit"><span class="submit-idle">&#9654; SEND MESSAGE</span><span class="submit-sending" style="display:none">TRANSMITTING...</span></button>
+            <div id="form-success" style="display:none" class="form-success">&#10003; MESSAGE RECEIVED! I'll get back to you soon.</div>
           </form>
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
-      <p class="footer-copy">© 2025 <span style="color:var(--purple)">THATGAMEDEV</span><span style="color:var(--pink)">OSMAN</span></p>
+      <p class="footer-copy">&#169; 2025 <span style="color:var(--purple)">THATGAMEDEV</span><span style="color:var(--pink)">OSMAN</span></p>
       <div class="footer-socials">
-        <a href="/cdn-cgi/l/email-protection#254a5648444b564449404048141d654248444c490b464a48" title="Email">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-        </a>
-        <a href="https://www.linkedin.com/in/usmansaleem1997/" target="_blank" title="LinkedIn">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-        </a>
-        <a href="https://github.com/GameDevOsman" target="_blank" title="GitHub">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        </a>
-        <a href="https://osmodev.itch.io/" target="_blank" title="Itch.io">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.302 1.22 2.44 2.325 2.44 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.106 2.41 2.437 2.41h.028c1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.436 2.41C22.78 8.42 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612C19.948 1 12.533 1 12 1c-.533 0-7.948 0-8.87.338zm8.64 8.65c-.55.002-1.08.05-1.52.17-1.836.494-2.154 1.53-2.154 3.814v2.033s-.67-.02-1.264.17c-1.115.36-1.196 1.116-1.196 1.624 0 0-.037 1.363 1.69 1.796.422.107.79.17 1.107.194.616.05.983.013.983.013s.346 1.466 1.254 2.107c1.07.762 2.617.703 4.263.007.9-.385 1.544-1.504 1.773-2.104 0 0 .373.034.983-.013.317-.024.685-.087 1.107-.194 1.726-.433 1.69-1.796 1.69-1.796 0-.508-.082-1.264-1.197-1.624-.594-.19-1.264-.17-1.264-.17V13.97c0-2.284-.32-3.32-2.154-3.815-.44-.118-.97-.166-1.52-.168h-.78z"/></svg>
-        </a>
+        <a href="mailto:osmansaleem18@gmail.com" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+        <a href="https://www.linkedin.com/in/usmansaleem1997/" target="_blank" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a href="https://github.com/GameDevOsman" target="_blank" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg></a>
+        <a href="https://osmodev.itch.io/" target="_blank" title="Itch.io"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.302 1.22 2.44 2.325 2.44 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.106 2.41 2.437 2.41h.028c1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.436 2.41C22.78 8.42 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612C19.948 1 12.533 1 12 1c-.533 0-7.948 0-8.87.338zm8.64 8.65c-.55.002-1.08.05-1.52.17-1.836.494-2.154 1.53-2.154 3.814v2.033s-.67-.02-1.264.17c-1.115.36-1.196 1.116-1.196 1.624 0 0-.037 1.363 1.69 1.796.422.107.79.17 1.107.194.616.05.983.013.983.013s.346 1.466 1.254 2.107c1.07.762 2.617.703 4.263.007.9-.385 1.544-1.504 1.773-2.104 0 0 .373.034.983-.013.317-.024.685-.087 1.107-.194 1.726-.433 1.69-1.796 1.69-1.796 0-.508-.082-1.264-1.197-1.624-.594-.19-1.264-.17-1.264-.17V13.97c0-2.284-.32-3.32-2.154-3.815-.44-.118-.97-.166-1.52-.168h-.78z"/></svg></a>
       </div>
     </div>
   </footer>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // ─── CURSOR ───
+  <script>
+    // CURSOR
     const cursor = document.getElementById('cursor');
     const dot = cursor.querySelector('.dot');
     const ring = cursor.querySelector('.ring');
     let mx = 0, my = 0, rx = 0, ry = 0;
-
     document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-    function animCursor() {
-      rx += (mx - rx) * 0.18;
-      ry += (my - ry) * 0.18;
-      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    (function animCursor() {
+      rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+      dot.style.left = mx+'px'; dot.style.top = my+'px';
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
       requestAnimationFrame(animCursor);
-    }
-    animCursor();
-
-    document.querySelectorAll('a, button, .game-card, .chip, .play-btn').forEach(el => {
+    })();
+    document.querySelectorAll('a,button,.game-card,.chip').forEach(el => {
       el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
       el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
     });
 
-    // ─── STARS CANVAS ───
+    // STARS
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     let stars = [];
-
-    function resizeCanvas() {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    }
-
+    function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
     function initStars() {
       stars = [];
       for (let i = 0; i < 180; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          r: Math.random() * 1.4 + 0.2,
-          speed: Math.random() * 0.25 + 0.05,
-          alpha: Math.random(),
-          twinkle: Math.random() * 0.02 + 0.005
-        });
+        stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height, r:Math.random()*1.4+0.2, speed:Math.random()*0.25+0.05, alpha:Math.random(), twinkle:Math.random()*0.02+0.005 });
       }
     }
-
     function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0,0,canvas.width,canvas.height);
       stars.forEach(s => {
         s.alpha += s.twinkle;
         if (s.alpha > 1 || s.alpha < 0) s.twinkle *= -1;
         s.y += s.speed;
-        if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+        if (s.y > canvas.height) { s.y = 0; s.x = Math.random()*canvas.width; }
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${Math.random() > 0.85 ? '255,121,198' : '248,248,242'},${Math.max(0.1, s.alpha)})`;
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba('+(Math.random()>0.85?'255,121,198':'248,248,242')+','+Math.max(0.1,s.alpha)+')';
         ctx.fill();
       });
       requestAnimationFrame(drawStars);
     }
-
-    resizeCanvas();
-    initStars();
-    drawStars();
+    resizeCanvas(); initStars(); drawStars();
     window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
 
-    // ─── NAV SCROLL ───
+    // NAV SCROLL
     const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 50);
-    });
+    window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50));
 
-    // ─── STAT COUNTER ───
+    // STAT COUNTER
     const statNums = document.querySelectorAll('.stat-num[data-count]');
     let counted = false;
     const statsEl = document.getElementById('stats');
-
     function countUp() {
       if (counted) return;
-      const rect = statsEl.getBoundingClientRect();
-      if (rect.top < window.innerHeight - 80) {
+      if (statsEl.getBoundingClientRect().top < window.innerHeight - 80) {
         counted = true;
         statNums.forEach(el => {
           const target = parseInt(el.dataset.count);
-          let current = 0;
-          const step = Math.ceil(target / 30);
-          const timer = setInterval(() => {
-            current = Math.min(current + step, target);
-            el.textContent = current + (el.dataset.count === '100' ? '%' : '+');
-            if (current >= target) clearInterval(timer);
+          let cur = 0;
+          const step = Math.ceil(target/30);
+          const t = setInterval(() => {
+            cur = Math.min(cur+step, target);
+            el.textContent = cur + (el.dataset.count === '100' ? '%' : '+');
+            if (cur >= target) clearInterval(t);
           }, 40);
         });
       }
@@ -1189,43 +486,41 @@
     window.addEventListener('scroll', countUp);
     countUp();
 
-    // ─── CONTACT FORM ───
+    // CONTACT FORM
     function handleSubmit(e) {
       e.preventDefault();
       const btn = document.querySelector('.form-submit');
-      const idle = btn.querySelector('.submit-idle');
-      const sending = btn.querySelector('.submit-sending');
-      const success = document.getElementById('form-success');
-
-      idle.style.display = 'none';
-      sending.style.display = 'inline';
+      btn.querySelector('.submit-idle').style.display = 'none';
+      btn.querySelector('.submit-sending').style.display = 'inline';
       btn.disabled = true;
-
       setTimeout(() => {
-        sending.style.display = 'none';
+        btn.querySelector('.submit-sending').style.display = 'none';
         btn.style.display = 'none';
-        success.style.display = 'block';
+        document.getElementById('form-success').style.display = 'block';
         e.target.reset();
       }, 1800);
     }
 
-    // ─── CARD REVEAL ON SCROLL ───
-    // ─── CARD REVEAL ON SCROLL ───
+    // CARD REVEAL
     const cards = document.querySelectorAll('.game-card');
-    // Add will-animate class so cards start hidden only when JS is running
     cards.forEach(c => c.classList.add('will-animate'));
-
-    const observer = new IntersectionObserver((entries) => {
+    const obs = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const idx = Array.from(cards).indexOf(entry.target);
-          setTimeout(() => entry.target.classList.add('visible'), 80 * (idx % 4));
-          observer.unobserve(entry.target);
+          setTimeout(() => entry.target.classList.add('visible'), 80*(idx%4));
+          obs.unobserve(entry.target);
         }
       });
     }, { threshold: 0.08 });
-    cards.forEach(c => observer.observe(c));
-
-    // Also trigger for cards already in view on load
+    cards.forEach(c => obs.observe(c));
     setTimeout(() => {
-      car
+      cards.forEach((c, i) => {
+        if (c.getBoundingClientRect().top < window.innerHeight) {
+          setTimeout(() => c.classList.add('visible'), 80*(i%4));
+        }
+      });
+    }, 100);
+  </script>
+</body>
+</html>
